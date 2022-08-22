@@ -1,0 +1,9 @@
+{
+  "ratings": [
+    { "userId": "1", "rating": 2 },
+    { "userId": "2", "rating": 5 },
+    { "userId": "3", "rating": 5 },
+    { "userId": "4", "rating": 4 },
+    { "userId": "5", "rating": 3 }
+  ]
+}

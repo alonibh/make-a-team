@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
+import "primereact/resources/primereact.min.css"; //core css
+import "primeicons/primeicons.css"; //icons
+import { RatingPage } from "./pages/RatingPage";
+import { SessionStorage } from "./services/SessionStorage";
+import { MyTeamsPage } from "./pages/MyTeamsPage";
+import { BrowserRouter, Switch, Route, HashRouter } from "react-router-dom";
 
 function App() {
+  const sessionStorage = new SessionStorage();
+  useEffect(() => {
+    sessionStorage.setUserId("0");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <BrowserRouter>
+        <Switch>
+          <Route exact={true} path="/" component={MyTeamsPage} />
+          <Route path="/myTeams/:teamId" component={RatingPage} />
+        </Switch>
+      </BrowserRouter>
+    </>
   );
+
+  // return <RatingPage teamName="Sunday league" teamId="0" isAdmin={true} />;
 }
 
 export default App;
