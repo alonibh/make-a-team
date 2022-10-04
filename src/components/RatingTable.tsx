@@ -13,9 +13,7 @@ export const RatingTable = (props: RatingTableProps) => {
     return (
       <Rating
         value={rowData.rating}
-        onChange={(e) =>
-          props.onRatingsChanged(rowData.userId, e.value ? e.value : 0)
-        }
+        onChange={(e) => props.onRatingsChanged(rowData.userId, e.value ?? 0)}
       />
     );
   };

@@ -7,6 +7,7 @@ import { RatingPage } from "./pages/RatingPage";
 import { SessionStorage } from "./services/SessionStorage";
 import { MyTeamsPage } from "./pages/MyTeamsPage";
 import { BrowserRouter, Switch, Route, HashRouter } from "react-router-dom";
+import "primeflex/primeflex.css";
 
 function App() {
   const sessionStorage = new SessionStorage();

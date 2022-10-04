@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import RatingTable from "../components/RatingTable";
-import { Button } from "primereact/button";
 import { ApiService } from "../services/ApiService";
 import { UserRating } from "../models/UserRating";
 import { SessionStorage } from "../services/SessionStorage";
-import { Message } from "primereact/message";
-import { InputNumber } from "primereact/inputnumber";
 import { useParams } from "react-router-dom";
+import RatingSubmission from "../components/RatingSubmission";
+import Popup from "../components/popup/Popup";
+import Teams from "../components/teams";
+import { Team } from "../models/Team";
 
 interface urlParams {
   teamId: string;
@@ -19,11 +20,10 @@ export const RatingPage = () => {
 
   const [teamName, setTeamName] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-
   const [isSubmitting, setSubmitting] = useState(false);
-  const [numOfTeams, setNumOfTeams] = useState(3);
-  const [playersPerTeams, setPlayersPerTeams] = useState(5);
   const [ratings, setRatings] = useState<UserRating[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {
     apiService
@@ -35,22 +35,29 @@ export const RatingPage = () => {
     });
   }, []);
 
-  const onSubmitRatingsClicked = () => {
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const onSubmitRatingsClicked = (
+    numOfTeams: number,
+    playersPerTeams: number
+  ) => {
     setSubmitting(true);
     apiService
       .submitRatings(userId, ratings)
       .then(() => setSubmitting(false))
       .then(() => {
         if (isAdmin) {
-          makeTeams();
+          displayTeams(numOfTeams, playersPerTeams);
         }
       });
   };
 
-  function makeTeams() {
+  function displayTeams(numOfTeams: number, playersPerTeams: number) {
     const teams = apiService.createTeams(teamId, numOfTeams, playersPerTeams);
-    console.log(teams);
-    // TODO refer to the teams page
+    setTeams(teams);
+    togglePopup();
   }
 
   const setRating = (userId: Number, rating: number) => {
@@ -60,62 +67,25 @@ export const RatingPage = () => {
     setRatings(newRatings);
   };
 
-  function TeamsSettings() {
-    return (
-      <div className="field col-12 md:col-3">
-        <label htmlFor="integeronly">Number of teams</label>
-        <InputNumber
-          inputId="integeronly"
-          value={numOfTeams}
-          onValueChange={(e) => setNumOfTeams(e.value ?? 0)}
-        />
-        <br />
-        <label htmlFor="integeronly">Players per team</label>
-        <InputNumber
-          inputId="integeronly"
-          value={playersPerTeams}
-          onValueChange={(e) => setPlayersPerTeams(e.value ?? 0)}
-        />
-      </div>
-    );
-  }
-
-  function SubmitRating() {
-    if (isAdmin) {
-      return (
-        <>
-          <div className="col-12 md:col-3">
-            <Message
-              severity="warn"
-              text="{x} players hasn't submitted ratings"
-            />
-          </div>
-          <TeamsSettings />
-          <Button
-            label="Make a team"
-            icon="pi pi-check"
-            loading={isSubmitting}
-            onClick={onSubmitRatingsClicked}
-          />
-        </>
-      );
-    } else {
-      return (
-        <Button
-          label="Submit"
-          icon="pi pi-check"
-          loading={isSubmitting}
-          onClick={onSubmitRatingsClicked}
-        />
-      );
-    }
-  }
-
   return (
-    <div>
+    <div className="m-3">
       <h2>{teamName}</h2>
       <RatingTable ratings={ratings} onRatingsChanged={setRating} />
-      <SubmitRating />
+      <RatingSubmission
+        isAdmin={isAdmin}
+        isSubmitting={isSubmitting}
+        onSubmitRatingsClicked={onSubmitRatingsClicked}
+      ></RatingSubmission>
+      {isOpen && (
+        <Popup
+          content={
+            <>
+              <Teams teams={teams}></Teams>
+            </>
+          }
+          handleClose={togglePopup}
+        />
+      )}
     </div>
   );
 };
