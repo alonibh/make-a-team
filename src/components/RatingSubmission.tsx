@@ -8,66 +8,66 @@ interface RatingSubmissionProps {
   isSubmitting: boolean;
   onSubmitRatingsClicked: (numOfTeams: number, playersPerTeams: number) => void;
 }
-export const RatingSubmission = (props: RatingSubmissionProps) => {
-  const [numOfTeams, setNumOfTeams] = useState(3);
-  const [playersPerTeams, setPlayersPerTeams] = useState(5);
 
-  function TeamsSettings() {
-    return (
-      <div className="field col-12 md:col-3">
-        <label htmlFor="integeronly">Number of teams</label>
-        <InputNumber
-          inputId="integeronly"
-          value={numOfTeams}
-          onValueChange={(e) => setNumOfTeams(e.value ?? 0)}
-        />
-        <br />
-        <label htmlFor="integeronly">Players per team</label>
-        <InputNumber
-          inputId="integeronly"
-          value={playersPerTeams}
-          onValueChange={(e) => setPlayersPerTeams(e.value ?? 0)}
-        />
-      </div>
-    );
+export default function RatingSubmission(props: RatingSubmissionProps) {
+  const [teamsForm, setTeamsForm] = useState({
+    numOfTeams: 3,
+    playersPerTeams: 5,
+  });
+
+  function setNumOfTeams(numOfTeams: number) {
+    setTeamsForm({ ...teamsForm, numOfTeams: numOfTeams });
   }
 
-  function SubmitRating() {
-    if (props.isAdmin) {
-      return (
-        <>
-          <div className="col-12 md:col-3">
-            <Message
-              severity="warn"
-              text="{x} players hasn't submitted ratings"
-            />
-          </div>
-          <TeamsSettings />
-          <Button
-            label="Make a team"
-            icon="pi pi-check"
-            loading={props.isSubmitting}
-            onClick={() =>
-              props.onSubmitRatingsClicked(numOfTeams, playersPerTeams)
-            }
+  function setPlayersPerTeams(playersPerTeams: number) {
+    setTeamsForm({ ...teamsForm, playersPerTeams: playersPerTeams });
+  }
+
+  if (props.isAdmin) {
+    return (
+      <>
+        <div className="col-12 md:col-3">
+          <Message
+            severity="warn"
+            text="{x} players hasn't submitted ratings"
           />
-        </>
-      );
-    } else {
-      return (
+        </div>
+        <div className="field col-12 md:col-3">
+          <label htmlFor="integeronly">Number of teams</label>
+          <InputNumber
+            inputId="integeronly"
+            value={teamsForm.numOfTeams}
+            onValueChange={(e) => setNumOfTeams(e.value ?? 0)}
+          />
+          <br />
+          <label htmlFor="integeronly">Players per team</label>
+          <InputNumber
+            inputId="integeronly"
+            value={teamsForm.playersPerTeams}
+            onValueChange={(e) => setPlayersPerTeams(e.value ?? 0)}
+          />
+        </div>
         <Button
-          label="Submit"
+          label="Make a team"
           icon="pi pi-check"
           loading={props.isSubmitting}
           onClick={() =>
-            props.onSubmitRatingsClicked(numOfTeams, playersPerTeams)
+            props.onSubmitRatingsClicked(
+              teamsForm.numOfTeams,
+              teamsForm.playersPerTeams
+            )
           }
         />
-      );
-    }
+      </>
+    );
+  } else {
+    return (
+      <Button
+        label="Submit"
+        icon="pi pi-check"
+        loading={props.isSubmitting}
+        onClick={() => props.onSubmitRatingsClicked(0, 0)}
+      />
+    );
   }
-
-  return <SubmitRating />;
-};
-
-export default RatingSubmission;
+}

@@ -1,8 +1,8 @@
-import { Team } from "../models/Team";
+import { TeamPlayers } from "../models/TeamPlayers";
 import { Card } from "primereact/card";
 
 interface TeamProps {
-  teams: Team[];
+  teams: TeamPlayers[];
 }
 
 interface PlayersListProps {
@@ -10,12 +10,8 @@ interface PlayersListProps {
 }
 
 interface TeamCardProps {
-  team: Team;
+  team: TeamPlayers;
   i: number;
-}
-
-interface TeamCardsProps {
-  teams: Team[];
 }
 
 export const Teams = (props: TeamProps) => {
@@ -36,7 +32,7 @@ export const Teams = (props: TeamProps) => {
         style={{ width: "25rem", marginBottom: "2em" }}
       >
         <div className="m-0" style={{ lineHeight: "1.5" }}>
-          <PlayersList players={props.team.playersInTeam} />
+          <PlayersList players={props.team.names} />
         </div>
       </Card>
     );

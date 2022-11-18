@@ -1,21 +1,20 @@
+import React from "react";
 import "./Popup.css";
 
 interface PopupProps {
-  content: any;
+  children: React.ReactElement;
   handleClose: () => void;
 }
 
-export const Popup = (props: PopupProps) => {
+export default function Popup(props: PopupProps) {
   return (
     <div className="popup-box">
       <div className="box">
         <span className="close-icon" onClick={props.handleClose}>
           x
         </span>
-        {props.content}
+        {props.children}
       </div>
     </div>
   );
-};
-
-export default Popup;
+}

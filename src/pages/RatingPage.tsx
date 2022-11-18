@@ -1,84 +1,79 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import RatingTable from "../components/RatingTable";
 import { ApiService } from "../services/ApiService";
-import { UserRating } from "../models/UserRating";
-import { SessionStorage } from "../services/SessionStorage";
 import { useParams } from "react-router-dom";
 import RatingSubmission from "../components/RatingSubmission";
 import Popup from "../components/popup/Popup";
 import Teams from "../components/teams";
-import { Team } from "../models/Team";
+import { TeamPlayers } from "../models/TeamPlayers";
+import { UserContext } from "../components/UserContext";
+import { UserTeamSettings } from "../models/UserTeamSettings";
 
 interface urlParams {
   teamId: string;
 }
 
-export const RatingPage = () => {
+export default function RatingPage() {
   const { teamId } = useParams<urlParams>();
   const apiService = new ApiService();
-  const userId = new SessionStorage().getUserId();
+  const userId = useContext(UserContext);
 
-  const [teamName, setTeamName] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [teamSettings, setTeamSettings] = useState<UserTeamSettings>({
+    isUserAdminOfTeam: false,
+    name: "",
+    ratings: [],
+  });
   const [isSubmitting, setSubmitting] = useState(false);
-  const [ratings, setRatings] = useState<UserRating[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<TeamPlayers[]>([]);
 
   useEffect(() => {
-    apiService
-      .getRatings(userId, teamId)
-      .then((ratings) => setRatings(ratings));
-    apiService.getTeamName(teamId).then((teamName) => setTeamName(teamName));
-    apiService.isUserAdminOfTeam(userId, teamId).then((isAdmin) => {
-      setIsAdmin(isAdmin);
+    apiService.getUserTeamSettings(userId, teamId).then((res) => {
+      setTeamSettings(res);
     });
   }, []);
 
-  const togglePopup = () => {
+  function togglePopup() {
     setIsOpen(!isOpen);
-  };
+  }
 
-  const onSubmitRatingsClicked = (
-    numOfTeams: number,
-    playersPerTeams: number
-  ) => {
+  function onSubmitRatingsClicked(numOfTeams: number, playersPerTeams: number) {
     setSubmitting(true);
-    apiService
-      .submitRatings(userId, ratings)
-      .then(() => setSubmitting(false))
-      .then(() => {
-        if (isAdmin) {
-          displayTeams(numOfTeams, playersPerTeams);
-        }
-      });
-  };
-
-  function displayTeams(numOfTeams: number, playersPerTeams: number) {
-    const teams = apiService.createTeams(teamId, numOfTeams, playersPerTeams);
-    setTeams(teams);
-    togglePopup();
+    apiService.submitRatings(userId, teamSettings.ratings).then(() => {
+      setSubmitting(false);
+      if (teamSettings.isUserAdminOfTeam) {
+        apiService
+          .createTeams(teamId, numOfTeams, playersPerTeams)
+          .then((teams) => {
+            setTeams(teams);
+            togglePopup();
+          });
+      }
+    });
   }
 
   const setRating = (userId: Number, rating: number) => {
-    let newRatings = [...ratings];
+    let newRatings = [...teamSettings.ratings];
     let indexToChange = newRatings.findIndex((o) => o.userId === userId);
     newRatings[indexToChange].rating = rating;
-    setRatings(newRatings);
+    setTeamSettings({ ...teamSettings, ratings: newRatings });
   };
 
   return (
     <div className="m-3">
-      <h2>{teamName}</h2>
-      <RatingTable ratings={ratings} onRatingsChanged={setRating} />
+      <h2>{teamSettings.name}</h2>
+      <RatingTable
+        ratings={teamSettings.ratings}
+        onRatingsChanged={setRating}
+      />
       <RatingSubmission
-        isAdmin={isAdmin}
+        isAdmin={teamSettings.isUserAdminOfTeam}
         isSubmitting={isSubmitting}
         onSubmitRatingsClicked={onSubmitRatingsClicked}
       ></RatingSubmission>
       {isOpen && (
         <Popup
-          content={
+          children={
             <>
               <Teams teams={teams}></Teams>
             </>
@@ -88,4 +83,4 @@ export const RatingPage = () => {
       )}
     </div>
   );
-};
+}

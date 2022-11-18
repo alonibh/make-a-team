@@ -1,37 +1,62 @@
-import { Team } from "../models/Team";
+import { TeamPlayers } from "../models/TeamPlayers";
+import { TeamDetails } from "../models/TeamDetails";
 import { UserRating } from "../models/UserRating";
+import axios from "axios";
+import { UserTeamSettings } from "../models/UserTeamSettings";
 
+let port = 5001;
 export class ApiService {
-  getRatings(userId: string, teamId: string) {
-    return fetch("/data/ratings.json")
-      .then((res) => res.json())
-      .then((d) => d.ratings);
+  getUserTeamSettings(
+    userId: string,
+    teamId: string
+  ): Promise<UserTeamSettings> {
+    return axios
+      .get(`https://localhost:${port}/UserTeamSettings`, {
+        params: { userId, teamId },
+      })
+      .then((res) => res.data);
   }
 
-  submitRatings(userId: string, ratings: UserRating[]) {
-    return new Promise((res) => setTimeout(res, 500));
+  submitRatings(userId: string, ratings: UserRating[]): Promise<void> {
+    return axios.post(`https://localhost:${port}/SubmitRatings`, ratings, {
+      params: { userId },
+    });
   }
 
   createTeams(
     teamId: string,
     numberOfTeams: number,
     playersPerTeam: number
-  ): Team[] {
-    let team1: Team = { playersInTeam: ["P1", "P2", "P3", "P4", "P5"] };
-    let team2: Team = { playersInTeam: ["P6", "P7", "P8", "P9", "P10"] };
-    let team3: Team = { playersInTeam: ["P11", "P12", "P13", "P14", "P15"] };
-    const teams: Team[] = [team1, team2, team3];
-    return teams;
+  ): Promise<TeamPlayers[]> {
+    return axios
+      .post(`https://localhost:${port}/CreateTeams`, null, {
+        params: { teamId, numberOfTeams, playersPerTeam },
+      })
+      .then((res) => res.data);
   }
 
-  getTeamName(teamId: string): Promise<string> {
-    return Promise.resolve("Sunday League");
+  getUserTeams(userId: string): Promise<TeamDetails[]> {
+    return axios
+      .get(`https://localhost:${port}/UserTeams`, { params: { userId } })
+      .then((res) => {
+        let teams: TeamDetails[] = [];
+        (res.data as TeamDetails[]).forEach((team) => {
+          team.date = new Date(team.date);
+          teams.push(team);
+        });
+        return teams;
+      });
   }
 
-  isUserAdminOfTeam(
-    userId: string,
-    teamId: string | undefined
-  ): Promise<boolean> {
-    return Promise.resolve(true);
+  importTeam(teamCode: string): Promise<TeamDetails> {
+    return axios
+      .post(`https://localhost:${port}/ImportTeam`, null, {
+        params: { teamCode },
+      })
+      .then((res) => {
+        let importedTeam: TeamDetails = res.data;
+        importedTeam.date = new Date(importedTeam.date);
+        return importedTeam;
+      });
   }
 }

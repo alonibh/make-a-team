@@ -8,8 +8,8 @@ interface RatingTableProps {
   onRatingsChanged: (userId: Number, rating: number) => void;
 }
 
-export const RatingTable = (props: RatingTableProps) => {
-  const ratingBodyTemplate = (rowData: UserRating) => {
+export default function RatingTable(props: RatingTableProps) {
+  const RatingBodyTemplate = (rowData: UserRating) => {
     return (
       <Rating
         value={rowData.rating}
@@ -26,12 +26,10 @@ export const RatingTable = (props: RatingTableProps) => {
           <Column
             field="rating"
             header="Rating"
-            body={ratingBodyTemplate}
+            body={RatingBodyTemplate}
           ></Column>
         </DataTable>
       </div>
     </div>
   );
-};
-
-export default RatingTable;
+}
