@@ -6,22 +6,11 @@ import { useState } from "react";
 interface RatingSubmissionProps {
   isAdmin: boolean;
   isSubmitting: boolean;
-  onSubmitRatingsClicked: (numOfTeams: number, playersPerTeams: number) => void;
+  onSubmitRatingsClicked: (numOfTeams: number) => void;
 }
 
 export default function RatingSubmission(props: RatingSubmissionProps) {
-  const [teamsForm, setTeamsForm] = useState({
-    numOfTeams: 3,
-    playersPerTeams: 5,
-  });
-
-  function setNumOfTeams(numOfTeams: number) {
-    setTeamsForm({ ...teamsForm, numOfTeams: numOfTeams });
-  }
-
-  function setPlayersPerTeams(playersPerTeams: number) {
-    setTeamsForm({ ...teamsForm, playersPerTeams: playersPerTeams });
-  }
+  const [numOfTeams, setNumOfTeams] = useState(3);
 
   if (props.isAdmin) {
     return (
@@ -36,27 +25,15 @@ export default function RatingSubmission(props: RatingSubmissionProps) {
           <label htmlFor="integeronly">Number of teams</label>
           <InputNumber
             inputId="integeronly"
-            value={teamsForm.numOfTeams}
+            value={numOfTeams}
             onValueChange={(e) => setNumOfTeams(e.value ?? 0)}
-          />
-          <br />
-          <label htmlFor="integeronly">Players per team</label>
-          <InputNumber
-            inputId="integeronly"
-            value={teamsForm.playersPerTeams}
-            onValueChange={(e) => setPlayersPerTeams(e.value ?? 0)}
           />
         </div>
         <Button
           label="Make a team"
           icon="pi pi-check"
           loading={props.isSubmitting}
-          onClick={() =>
-            props.onSubmitRatingsClicked(
-              teamsForm.numOfTeams,
-              teamsForm.playersPerTeams
-            )
-          }
+          onClick={() => props.onSubmitRatingsClicked(numOfTeams)}
         />
       </>
     );
@@ -66,7 +43,7 @@ export default function RatingSubmission(props: RatingSubmissionProps) {
         label="Submit"
         icon="pi pi-check"
         loading={props.isSubmitting}
-        onClick={() => props.onSubmitRatingsClicked(0, 0)}
+        onClick={() => props.onSubmitRatingsClicked(0)}
       />
     );
   }

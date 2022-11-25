@@ -37,17 +37,15 @@ export default function RatingPage() {
     setIsOpen(!isOpen);
   }
 
-  function onSubmitRatingsClicked(numOfTeams: number, playersPerTeams: number) {
+  function onSubmitRatingsClicked(numOfTeams: number) {
     setSubmitting(true);
     apiService.submitRatings(userId, teamSettings.ratings).then(() => {
       setSubmitting(false);
       if (teamSettings.isUserAdminOfTeam) {
-        apiService
-          .createTeams(teamId, numOfTeams, playersPerTeams)
-          .then((teams) => {
-            setTeams(teams);
-            togglePopup();
-          });
+        apiService.splitToTeams(teamId, numOfTeams).then((teams) => {
+          setTeams(teams);
+          togglePopup();
+        });
       }
     });
   }

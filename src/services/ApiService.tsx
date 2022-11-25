@@ -23,14 +23,10 @@ export class ApiService {
     });
   }
 
-  createTeams(
-    teamId: string,
-    numberOfTeams: number,
-    playersPerTeam: number
-  ): Promise<TeamPlayers[]> {
+  splitToTeams(teamId: string, numberOfTeams: number): Promise<TeamPlayers[]> {
     return axios
-      .post(`https://localhost:${port}/CreateTeams`, null, {
-        params: { teamId, numberOfTeams, playersPerTeam },
+      .post(`https://localhost:${port}/SplitToTeams`, null, {
+        params: { teamId, numberOfTeams },
       })
       .then((res) => res.data);
   }

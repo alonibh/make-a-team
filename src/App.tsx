@@ -13,7 +13,7 @@ import RatingPage from "./pages/RatingPage";
 function App() {
   const sessionStorage = new SessionStorage();
   useEffect(() => {
-    sessionStorage.setUserId("0");
+    sessionStorage.setUserId("1");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const userId = new SessionStorage().getUserId();
