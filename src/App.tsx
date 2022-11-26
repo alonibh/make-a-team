@@ -16,6 +16,7 @@ function App() {
     sessionStorage.setUserId("1");
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  //why craete new SessionStorage? just use the one above.
   const userId = new SessionStorage().getUserId();
 
   return (

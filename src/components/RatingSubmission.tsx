@@ -31,6 +31,7 @@ export default function RatingSubmission(props: RatingSubmissionProps) {
         </div>
         <Button
           label="Make a team"
+          //nice name
           icon="pi pi-check"
           loading={props.isSubmitting}
           onClick={() => props.onSubmitRatingsClicked(numOfTeams)}

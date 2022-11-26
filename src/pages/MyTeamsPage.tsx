@@ -9,6 +9,7 @@ interface TeamCardProps {
   teamDetails: TeamDetails;
 }
 
+//seperate file for each component: TeamCard,ImportTeam, MyTeams...
 function TeamCard(props: TeamCardProps) {
   return (
     <Link to={`/myTeams/${props.teamDetails.id}`}>
@@ -64,6 +65,7 @@ export default function MyTeamsPage() {
       .then((userTeams) => setUserTeams(userTeams));
   }, []);
 
+  //bad name for function, its like the component name
   function importTeam(teamCode: string) {
     apiService.importTeam(teamCode).then((importedTeam) => {
       setUserTeams([...userTeams, importedTeam]);

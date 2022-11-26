@@ -28,17 +28,24 @@ export default function RatingPage() {
   const [teams, setTeams] = useState<TeamPlayers[]>([]);
 
   useEffect(() => {
+    //better to have error handling when fetching from API
+    //you should look at react-query package
     apiService.getUserTeamSettings(userId, teamId).then((res) => {
       setTeamSettings(res);
     });
   }, []);
 
   function togglePopup() {
+    //you should do it with arrow function like:
+    // set is open((prevOpen) => !prevOpen)
     setIsOpen(!isOpen);
   }
 
+  //most of the times you dont need to use the function key word
+  //just use arrow function: const onSubmitRatingsClicked => {}
   function onSubmitRatingsClicked(numOfTeams: number) {
     setSubmitting(true);
+    //use async await
     apiService.submitRatings(userId, teamSettings.ratings).then(() => {
       setSubmitting(false);
       if (teamSettings.isUserAdminOfTeam) {
@@ -51,6 +58,7 @@ export default function RatingPage() {
   }
 
   const setRating = (userId: Number, rating: number) => {
+    //should always use consts and not lets
     let newRatings = [...teamSettings.ratings];
     let indexToChange = newRatings.findIndex((o) => o.userId === userId);
     newRatings[indexToChange].rating = rating;
@@ -71,6 +79,9 @@ export default function RatingPage() {
       ></RatingSubmission>
       {isOpen && (
         <Popup
+          // dont neee to use children, you just need to:
+          // <Popup
+          //  <Teams teams={teams}></Teams> />
           children={
             <>
               <Teams teams={teams}></Teams>

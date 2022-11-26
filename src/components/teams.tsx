@@ -1,6 +1,6 @@
 import { TeamPlayers } from "../models/TeamPlayers";
 import { Card } from "primereact/card";
-
+//use uppercase for file name
 interface TeamProps {
   teams: TeamPlayers[];
 }
@@ -13,8 +13,9 @@ interface TeamCardProps {
   team: TeamPlayers;
   i: number;
 }
-
+//the name TeamList is better
 export const Teams = (props: TeamProps) => {
+  //put in seperate component file
   function PlayersList(props: PlayersListProps) {
     return (
       <ul>
@@ -25,6 +26,7 @@ export const Teams = (props: TeamProps) => {
     );
   }
 
+  //seperate component file
   function TeamCard(props: TeamCardProps) {
     const card = (
       <Card
