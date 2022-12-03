@@ -4,28 +4,29 @@ import { UserRating } from "../models/UserRating";
 import axios from "axios";
 import { UserTeamSettings } from "../models/UserTeamSettings";
 
-let port = 5001;
 export class ApiService {
+  port: number = 5001;
+
   getUserTeamSettings(
     userId: string,
     teamId: string
   ): Promise<UserTeamSettings> {
     return axios
-      .get(`https://localhost:${port}/UserTeamSettings`, {
+      .get(`https://localhost:${this.port}/userteamsettings`, {
         params: { userId, teamId },
       })
       .then((res) => res.data);
   }
 
   submitRatings(userId: string, ratings: UserRating[]): Promise<void> {
-    return axios.post(`https://localhost:${port}/SubmitRatings`, ratings, {
+    return axios.post(`https://localhost:${this.port}/ratings`, ratings, {
       params: { userId },
     });
   }
 
   splitToTeams(teamId: string, numberOfTeams: number): Promise<TeamPlayers[]> {
     return axios
-      .post(`https://localhost:${port}/SplitToTeams`, null, {
+      .post(`https://localhost:${this.port}/teams/split`, null, {
         params: { teamId, numberOfTeams },
       })
       .then((res) => res.data);
@@ -33,7 +34,7 @@ export class ApiService {
 
   getUserTeams(userId: string): Promise<TeamDetails[]> {
     return axios
-      .get(`https://localhost:${port}/UserTeams`, { params: { userId } })
+      .get(`https://localhost:${this.port}/teams/${userId}`, {})
       .then((res) => {
         let teams: TeamDetails[] = [];
         (res.data as TeamDetails[]).forEach((team) => {
@@ -44,10 +45,10 @@ export class ApiService {
       });
   }
 
-  importTeam(teamCode: string): Promise<TeamDetails> {
+  joinTeam(userId: string, teamCode: string): Promise<TeamDetails> {
     return axios
-      .post(`https://localhost:${port}/ImportTeam`, null, {
-        params: { teamCode },
+      .post(`https://localhost:${this.port}/jointeam`, null, {
+        params: { userId, teamCode },
       })
       .then((res) => {
         let importedTeam: TeamDetails = res.data;

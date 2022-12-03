@@ -1,8 +1,8 @@
 export class SessionStorage {
-  setUserId(userId: string): void {
-    sessionStorage.setItem("userId", userId);
+  setItem(key: string, value: string): void {
+    sessionStorage.setItem(key, value);
   }
-  getUserId(): string {
-    return sessionStorage.getItem("userId") ?? "";
+  getItem(key: string): string | null {
+    return sessionStorage.getItem(key) ?? null;
   }
 }

@@ -4,10 +4,10 @@ import { ApiService } from "../services/ApiService";
 import { useParams } from "react-router-dom";
 import RatingSubmission from "../components/RatingSubmission";
 import Popup from "../components/popup/Popup";
-import Teams from "../components/teams";
 import { TeamPlayers } from "../models/TeamPlayers";
-import { UserContext } from "../components/UserContext";
+import { UserContext } from "./contexts/UserContext";
 import { UserTeamSettings } from "../models/UserTeamSettings";
+import TeamsList from "../components/TeamsList";
 
 interface urlParams {
   teamId: string;
@@ -28,17 +28,19 @@ export default function RatingPage() {
   const [teams, setTeams] = useState<TeamPlayers[]>([]);
 
   useEffect(() => {
+    // TODO - add error handling for all http requests
     apiService.getUserTeamSettings(userId, teamId).then((res) => {
       setTeamSettings(res);
     });
   }, []);
 
   function togglePopup() {
-    setIsOpen(!isOpen);
+    setIsOpen((prevIsOpen) => !prevIsOpen);
   }
 
   function onSubmitRatingsClicked(numOfTeams: number) {
     setSubmitting(true);
+    // TODO - make all of the api calls async
     apiService.submitRatings(userId, teamSettings.ratings).then(() => {
       setSubmitting(false);
       if (teamSettings.isUserAdminOfTeam) {
@@ -52,7 +54,7 @@ export default function RatingPage() {
 
   const setRating = (userId: Number, rating: number) => {
     let newRatings = [...teamSettings.ratings];
-    let indexToChange = newRatings.findIndex((o) => o.userId === userId);
+    const indexToChange = newRatings.findIndex((o) => o.userId === userId);
     newRatings[indexToChange].rating = rating;
     setTeamSettings({ ...teamSettings, ratings: newRatings });
   };
@@ -73,7 +75,7 @@ export default function RatingPage() {
         <Popup
           children={
             <>
-              <Teams teams={teams}></Teams>
+              <TeamsList teams={teams}></TeamsList>
             </>
           }
           handleClose={togglePopup}
