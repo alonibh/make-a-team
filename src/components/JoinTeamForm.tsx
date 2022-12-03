@@ -14,7 +14,7 @@ export default function JoinTeamForm(props: JoinTeamProps) {
       }}
     >
       <label>
-        Enter team code to import:
+        Enter team code to join:
         <input
           type="text"
           value={teamCode}
