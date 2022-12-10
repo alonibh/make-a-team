@@ -4,7 +4,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
 import "primereact/resources/primereact.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import { SessionStorage } from "./services/SessionStorage";
-import { BrowserRouter, Switch, Route, HashRouter } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "primeflex/primeflex.css";
 import { UserContext } from "./pages/contexts/UserContext";
 import MyTeamsPage from "./pages/MyTeamsPage";

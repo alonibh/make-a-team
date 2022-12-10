@@ -47,13 +47,23 @@ export class ApiService {
 
   joinTeam(userId: string, teamCode: string): Promise<TeamDetails> {
     return axios
-      .post(`https://localhost:${this.port}/jointeam`, null, {
+      .post(`https://localhost:${this.port}/teams/join`, null, {
         params: { userId, teamCode },
       })
       .then((res) => {
         let importedTeam: TeamDetails = res.data;
         importedTeam.date = new Date(importedTeam.date);
         return importedTeam;
+      });
+  }
+
+  createTeam(userId: string, teamName: string, date: string): Promise<string> {
+    return axios
+      .post(`https://localhost:${this.port}/teams`, null, {
+        params: { userId, teamName, date },
+      })
+      .then((res) => {
+        return res.data;
       });
   }
 }

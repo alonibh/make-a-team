@@ -4,8 +4,11 @@ import { TeamDetails } from "../models/TeamDetails";
 import { ApiService } from "../services/ApiService";
 import JoinTeamForm from "../components/JoinTeamForm";
 import TeamCardLink from "../components/TeamCardLink";
+import NewTeamForm from "../components/NewTeamForm";
+import { useHistory } from "react-router-dom";
 
 export default function MyTeamsPage() {
+  const history = useHistory();
   const apiService = new ApiService();
   const [userTeams, setUserTeams] = useState<TeamDetails[]>([]);
   const userId = useContext(UserContext);
@@ -22,6 +25,12 @@ export default function MyTeamsPage() {
     });
   }
 
+  function createNewTeam(teamName: string, date: string) {
+    apiService.createTeam(userId, teamName, date).then((teamId) => {
+      history.push(`/myTeams/${teamId}`);
+    });
+  }
+
   const teamCards = userTeams.map((team, i) => (
     <TeamCardLink teamDetails={team} key={i}></TeamCardLink>
   ));
@@ -32,6 +41,7 @@ export default function MyTeamsPage() {
         {teamCards}
       </div>
       <JoinTeamForm handleSubmit={joinTeam} />
+      <NewTeamForm handleSubmit={createNewTeam} />
     </div>
   );
 }
