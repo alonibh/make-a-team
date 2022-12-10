@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 import RatingSubmission from "../components/RatingSubmission";
 import Popup from "../components/popup/Popup";
 import { TeamPlayers } from "../models/TeamPlayers";
-import { UserContext } from "./contexts/UserContext";
 import { UserTeamSettings } from "../models/UserTeamSettings";
 import TeamsList from "../components/TeamsList";
+import useUser from "../hooks/UseUser";
 
 interface urlParams {
   teamId: string;
@@ -16,7 +16,7 @@ interface urlParams {
 export default function RatingPage() {
   const { teamId } = useParams<urlParams>();
   const apiService = new ApiService();
-  const userId = useContext(UserContext);
+  const { user } = useUser();
 
   const [teamSettings, setTeamSettings] = useState<UserTeamSettings>({
     isUserAdminOfTeam: false,
@@ -29,7 +29,7 @@ export default function RatingPage() {
 
   useEffect(() => {
     // TODO - add error handling for all http requests
-    apiService.getUserTeamSettings(userId, teamId).then((res) => {
+    apiService.getUserTeamSettings(user, teamId).then((res) => {
       setTeamSettings(res);
     });
   }, []);
@@ -41,7 +41,7 @@ export default function RatingPage() {
   function onSubmitRatingsClicked(numOfTeams: number) {
     setSubmitting(true);
     // TODO - make all of the api calls async
-    apiService.submitRatings(userId, teamSettings.ratings).then(() => {
+    apiService.submitRatings(user, teamSettings.ratings).then(() => {
       setSubmitting(false);
       if (teamSettings.isUserAdminOfTeam) {
         apiService.splitToTeams(teamId, numOfTeams).then((teams) => {

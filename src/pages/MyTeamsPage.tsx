@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "./contexts/UserContext";
+import useUser from "../hooks/UseUser";
 import { TeamDetails } from "../models/TeamDetails";
 import { ApiService } from "../services/ApiService";
 import JoinTeamForm from "../components/JoinTeamForm";
@@ -11,22 +11,20 @@ export default function MyTeamsPage() {
   const history = useHistory();
   const apiService = new ApiService();
   const [userTeams, setUserTeams] = useState<TeamDetails[]>([]);
-  const userId = useContext(UserContext);
+  const { user } = useUser();
 
   useEffect(() => {
-    apiService
-      .getUserTeams(userId)
-      .then((userTeams) => setUserTeams(userTeams));
+    apiService.getUserTeams(user).then((userTeams) => setUserTeams(userTeams));
   }, []);
 
   function joinTeam(teamCode: string) {
-    apiService.joinTeam(userId, teamCode).then((importedTeam) => {
+    apiService.joinTeam(user, teamCode).then((importedTeam) => {
       setUserTeams([...userTeams, importedTeam]);
     });
   }
 
   function createNewTeam(teamName: string, date: string) {
-    apiService.createTeam(userId, teamName, date).then((teamId) => {
+    apiService.createTeam(user, teamName, date).then((teamId) => {
       history.push(`/myTeams/${teamId}`);
     });
   }
