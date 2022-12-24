@@ -7,6 +7,14 @@ import { UserTeamSettings } from "../models/UserTeamSettings";
 export class ApiService {
   port: number = 5001;
 
+  addUserIfNotExist(userId: string, name: string): Promise<boolean> {
+    return axios
+      .post(`https://localhost:${this.port}/users`, null, {
+        params: { userId, name },
+      })
+      .then((res) => res.data);
+  }
+
   getUserTeamSettings(
     userId: string,
     teamId: string
@@ -18,9 +26,13 @@ export class ApiService {
       .then((res) => res.data);
   }
 
-  submitRatings(userId: string, ratings: UserRating[]): Promise<void> {
+  submitRatings(
+    userId: string,
+    teamId: string,
+    ratings: UserRating[]
+  ): Promise<void> {
     return axios.post(`https://localhost:${this.port}/ratings`, ratings, {
-      params: { userId },
+      params: { userId, teamId },
     });
   }
 

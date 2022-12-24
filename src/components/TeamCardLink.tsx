@@ -17,6 +17,8 @@ export default function TeamCardLink(props: TeamCardLinkProps) {
           <ul>
             <li>Game Date: {props.teamDetails.date.toUTCString()}</li>
             <li>Players Count: {props.teamDetails.playersCount}</li>
+            {/* TODO - Add copy button */}
+            <li>Code: {props.teamDetails.code}</li>
           </ul>
         </div>
       </Card>

@@ -1,4 +1,5 @@
 export interface UserRating {
-  userId: number; // TODO maybe username instead?
+  userId: number;
+  name: string;
   rating: number;
 }

@@ -22,7 +22,7 @@ export default function RatingTable(props: RatingTableProps) {
     <div className="datatable-templating-demo">
       <div className="card">
         <DataTable value={props.ratings} responsiveLayout="scroll">
-          <Column field="userId" header="User ID"></Column>
+          <Column field="name" header="Player"></Column>
           <Column
             field="rating"
             header="Rating"

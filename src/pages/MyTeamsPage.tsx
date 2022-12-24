@@ -1,30 +1,35 @@
-import { useContext, useEffect, useState } from "react";
-import useUser from "../hooks/UseUser";
+import { useEffect, useState } from "react";
 import { TeamDetails } from "../models/TeamDetails";
 import { ApiService } from "../services/ApiService";
 import JoinTeamForm from "../components/JoinTeamForm";
 import TeamCardLink from "../components/TeamCardLink";
 import NewTeamForm from "../components/NewTeamForm";
 import { useHistory } from "react-router-dom";
+import LogoutButton from "../components/LogoutButton";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function MyTeamsPage() {
   const history = useHistory();
   const apiService = new ApiService();
   const [userTeams, setUserTeams] = useState<TeamDetails[]>([]);
-  const { user } = useUser();
+  const { user } = useAuth0();
+  const userId = user?.sub ?? "";
 
   useEffect(() => {
-    apiService.getUserTeams(user).then((userTeams) => setUserTeams(userTeams));
-  }, []);
+    userId &&
+      apiService
+        .getUserTeams(userId)
+        .then((userTeams) => setUserTeams(userTeams));
+  }, [userId]);
 
   function joinTeam(teamCode: string) {
-    apiService.joinTeam(user, teamCode).then((importedTeam) => {
+    apiService.joinTeam(userId, teamCode).then((importedTeam) => {
       setUserTeams([...userTeams, importedTeam]);
     });
   }
 
   function createNewTeam(teamName: string, date: string) {
-    apiService.createTeam(user, teamName, date).then((teamId) => {
+    apiService.createTeam(userId, teamName, date).then((teamId) => {
       history.push(`/myTeams/${teamId}`);
     });
   }
@@ -34,12 +39,16 @@ export default function MyTeamsPage() {
   ));
 
   return (
-    <div className="card">
-      <div className="flex flex-wrap card-container blue-container">
-        {teamCards}
+    <>
+      <h1>Hello, {user?.name}</h1>
+      <div className="card">
+        <div className="flex flex-wrap card-container blue-container">
+          {teamCards}
+        </div>
       </div>
       <JoinTeamForm handleSubmit={joinTeam} />
       <NewTeamForm handleSubmit={createNewTeam} />
-    </div>
+      <LogoutButton />
+    </>
   );
 }

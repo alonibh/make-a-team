@@ -7,6 +7,7 @@ interface RatingSubmissionProps {
   isAdmin: boolean;
   isSubmitting: boolean;
   onSubmitRatingsClicked: (numOfTeams: number) => void;
+  unsubmittedPlayersCount: number;
 }
 
 export default function RatingSubmission(props: RatingSubmissionProps) {
@@ -18,7 +19,10 @@ export default function RatingSubmission(props: RatingSubmissionProps) {
         <div className="col-12 md:col-3">
           <Message
             severity="warn"
-            text="{x} players hasn't submitted ratings"
+            text={
+              props.unsubmittedPlayersCount +
+              " players hasn't submitted ratings"
+            }
           />
         </div>
         <div className="field col-12 md:col-3">
