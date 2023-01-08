@@ -7,6 +7,7 @@ import NewTeamForm from "../components/NewTeamForm";
 import { useHistory } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
 import { useAuth0 } from "@auth0/auth0-react";
+import styled from "styled-components";
 
 export default function MyTeamsPage() {
   const history = useHistory();
@@ -38,6 +39,15 @@ export default function MyTeamsPage() {
     <TeamCardLink teamDetails={team} key={i}></TeamCardLink>
   ));
 
+  const Flex = styled.div`
+    display: flex;
+    flex-direction: column;
+  `;
+
+  const FlexItem = styled.div`
+    margin: 1rem;
+  `;
+
   return (
     <>
       <h1>Hello, {user?.name}</h1>
@@ -46,8 +56,14 @@ export default function MyTeamsPage() {
           {teamCards}
         </div>
       </div>
-      <JoinTeamForm handleSubmit={joinTeam} />
-      <NewTeamForm handleSubmit={createNewTeam} />
+      <Flex>
+        <FlexItem>
+          <JoinTeamForm handleSubmit={joinTeam} />
+        </FlexItem>
+        <FlexItem>
+          <NewTeamForm handleSubmit={createNewTeam} />
+        </FlexItem>
+      </Flex>
       <LogoutButton />
     </>
   );

@@ -20,6 +20,7 @@ function App() {
   } else if (!isAuthenticated) {
     return <LoginPage />;
   } else if (user?.sub) {
+    // TODO remove
     console.log(JSON.stringify(user));
 
     apiService.addUserIfNotExist(user?.sub, user?.name ?? "").then((isNew) => {

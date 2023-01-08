@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 import RatingTable from "../components/RatingTable";
 import { ApiService } from "../services/ApiService";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import RatingSubmission from "../components/RatingSubmission";
 import Popup from "../components/popup/Popup";
 import { TeamPlayers } from "../models/TeamPlayers";
 import { UserTeamSettings } from "../models/UserTeamSettings";
 import TeamsList from "../components/TeamsList";
 import { useAuth0 } from "@auth0/auth0-react";
+import styled from "styled-components";
 
 interface urlParams {
   teamId: string;
@@ -61,29 +62,44 @@ export default function RatingPage() {
     setTeamSettings({ ...teamSettings, ratings: newRatings });
   };
 
+  const Flex = styled.div`
+    display: flex;
+    flex-direction: column;
+  `;
+
+  const Home = styled.div`
+    display: flex;
+    flex-direction: row-reverse;
+  `;
+
   return (
-    <div className="m-3">
-      <h2>{teamSettings.name}</h2>
-      <RatingTable
-        ratings={teamSettings.ratings}
-        onRatingsChanged={setRating}
-      />
-      <RatingSubmission
-        isAdmin={teamSettings.isUserAdminOfTeam}
-        isSubmitting={isSubmitting}
-        onSubmitRatingsClicked={onSubmitRatingsClicked}
-        unsubmittedPlayersCount={teamSettings.unsubmittedPlayersCount}
-      ></RatingSubmission>
-      {isOpen && (
-        <Popup
-          children={
-            <>
-              <TeamsList teams={teams}></TeamsList>
-            </>
-          }
-          handleClose={togglePopup}
+    <Flex>
+      <Home>
+        <Link to="/">Back to Home</Link>
+      </Home>
+      <div className="m-3">
+        <h2>{teamSettings.name}</h2>
+        <RatingTable
+          ratings={teamSettings.ratings}
+          onRatingsChanged={setRating}
         />
-      )}
-    </div>
+        <RatingSubmission
+          isAdmin={teamSettings.isUserAdminOfTeam}
+          isSubmitting={isSubmitting}
+          onSubmitRatingsClicked={onSubmitRatingsClicked}
+          unsubmittedPlayersCount={teamSettings.unsubmittedPlayersCount}
+        ></RatingSubmission>
+        {isOpen && (
+          <Popup
+            children={
+              <>
+                <TeamsList teams={teams}></TeamsList>
+              </>
+            }
+            handleClose={togglePopup}
+          />
+        )}
+      </div>
+    </Flex>
   );
 }
