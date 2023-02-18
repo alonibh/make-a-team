@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar } from "primereact/calendar";
+import { Calendar, CalendarChangeEvent } from "primereact/calendar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import styled from "styled-components";
@@ -18,9 +18,9 @@ const FlexItem = styled.div`
 
 export default function NewTeamForm(props: NewTeamProps) {
   const [teamName, setTeamName] = useState<string>("");
-  const [gameDate, setGameDate] = useState<Date | Date[] | undefined>(
-    new Date()
-  );
+  const [gameDate, setGameDate] = useState<
+    string | Date | Date[] | undefined | null
+  >(new Date());
 
   return (
     <form
@@ -46,7 +46,7 @@ export default function NewTeamForm(props: NewTeamProps) {
         <FlexItem>
           <Calendar
             value={gameDate}
-            onChange={(e) => setGameDate(e.value)}
+            onChange={(e: CalendarChangeEvent) => setGameDate(e.value)}
             showTime
           />
         </FlexItem>
